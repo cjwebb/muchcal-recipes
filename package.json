@@ -1,0 +1,26 @@
+{
+  "name": "munchcal-recipes",
+  "version": "0.0.1",
+  "description": "API to read recipes, and make a list of favourites",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cjwebb/munchcal-recipes.git"
+  },
+  "dependencies": {
+    "body-parser": "1.x",
+    "express": "4.x",
+    "express-validator": "2.9.0",
+    "lodash": "^3.7.0",
+    "moment": "2.9.0",
+    "morgan": "^1.5.2",
+    "node-neo4j": "2.0.3"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "gulp": "^3.8.11",
+    "gulp-mocha": "^2.0.1",
+    "gulp-nodemon": "^2.0.2",
+    "mocha": "^2.2.4"
+  }
+}
+
