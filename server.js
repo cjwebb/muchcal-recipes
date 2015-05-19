@@ -6,7 +6,7 @@ var express      = require('express'),
     morgan       = require('morgan'),
     app          = express();
 
-var db           = require('./data.js');
+var db           = require('./db.js');
 
 app.use(morgan('short'));
 app.use(bodyParser.json());
@@ -19,7 +19,13 @@ app.route('/recipes')
         var errors = req.validationErrors();
         if (errors) return res.status(400).json(errors);
 
-        return res.json(db.recipes);
+        var searchTerm = req.query.q;
+        // todo sanitize and url-decode
+        db.search(req.query.q, function(err, result){
+            if (err) res.status(500).send();
+
+            return res.json(result);
+        });
     })
 
 app.listen(process.env.PORT || 10020);

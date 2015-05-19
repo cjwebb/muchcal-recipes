@@ -1,7 +1,9 @@
-module.exports.recipes = [
+module.exports.recipes = {
+    data: [
     {
         name: "Spaghetti Carbonara",
         author: { name: "Colin Webb" },
+        image: { url: "/placeholder-c.png" },
         ingredients: [
             { name: "Spaghetti", quantity: "150g" },
             { name: "Egg", quantity: "2" },
@@ -40,4 +42,4 @@ module.exports.recipes = [
         ]
     }
 ]
-
+}
