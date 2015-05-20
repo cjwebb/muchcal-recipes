@@ -16,7 +16,7 @@ var search = function(searchTerm, callback) {
     // into
     //   OPTIONAL MATCH (result)-[:CONTAINS]->(i)
     var query = [
-        'START f=node:node_auto_index("name:*' + searchTerm + '*")',
+        'START f=node:node_auto_index("name:(*' + searchTerm + '*)")',
         'OPTIONAL MATCH (r)-[:CONTAINS|TYPE_OF*]->(f)',
         'WITH collect(r) + collect(f) as coll UNWIND coll as result',
         'WITH DISTINCT result',
@@ -25,7 +25,7 @@ var search = function(searchTerm, callback) {
         'RETURN recipe, ingredients'
     ].join("\n");
 
-    db.cypher({query:query}, function(err, results){
+    db.cypher({ query:query }, function(err, results){
         if (err) throw err;
 
         var data = _.map(results, function(r){

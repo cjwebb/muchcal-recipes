@@ -14,13 +14,12 @@ app.use(expValidator());
 
 app.route('/recipes')
     .get(function(req, res){
+        req.sanitize('q').trim();
         req.checkQuery('q', 'Missing search term').notEmpty();
 
         var errors = req.validationErrors();
         if (errors) return res.status(400).json(errors);
 
-        var searchTerm = req.query.q;
-        // todo sanitize and url-decode
         db.search(req.query.q, function(err, result){
             if (err) res.status(500).send();
 
