@@ -30,6 +30,7 @@ var search = function(searchTerm, callback) {
 
         var data = _.map(results, function(r){
             var recipe = r.recipe.properties;
+            recipe.author = { name: recipe.author };
             recipe.ingredients = _.map(r.ingredients, function(i){
                 return i.properties;
             });
