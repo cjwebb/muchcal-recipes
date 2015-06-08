@@ -28,9 +28,13 @@ var search = function(searchTerm, callback) {
     db.cypher({ query:query }, function(err, results){
         if (err) throw err;
 
-        var data = _.map(results, function(r){
-            var recipe = r.recipe.properties;
-            recipe.author = { name: recipe.author };
+        var data = _.map(results.slice(0,config.searchResultsLength), function(r){
+            var props = r.recipe.properties
+            var recipe = {};
+            recipe.id = props.id;
+            recipe.name = props.name;
+            recipe.author = { name: props.author_name };
+            recipe.image = { url: props.image_url };
             recipe.ingredients = _.map(r.ingredients, function(i){
                 return i.properties;
             });

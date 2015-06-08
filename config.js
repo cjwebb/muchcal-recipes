@@ -17,6 +17,11 @@ module.exports = config({
         env: 'MUNCHCAL_NEO4J_PASSWORD',
         type: 'string',
         required: true
+    },
+    searchResultsLength: {
+        env: 'MUNCHCAL_SEARCH_RESULTS_LENGTH',
+        type: 'integer',
+        default: 9
     }
 });
 
