@@ -15,8 +15,9 @@ var transformRecipe = function(r){
     return {
         id: props.id,
         name: props.name,
-        url: props.url,
+        source: { name: props.source_name, url: props.source_url },
         author: { name: props.author_name },
+        description: props.description,
         image: { url: props.image_url },
         ingredients: _.map(r.ingredients, function(i){
             return i.properties;
