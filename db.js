@@ -10,6 +10,20 @@ var props = {
 };
 var db = new neo4j.GraphDatabase(props);
 
+var transformRecipe = function(r){
+    var props = r.recipe.properties
+    return {
+        id: props.id,
+        name: props.name,
+        url: props.url,
+        author: { name: props.author_name },
+        image: { url: props.image_url },
+        ingredients: _.map(r.ingredients, function(i){
+            return i.properties;
+        })
+    };
+};
+
 var search = function(searchTerm, callback) {
     // ingredients can be made top-level results by making
     //   MATCH (result)-[:CONTAINS]->(i)
@@ -28,22 +42,26 @@ var search = function(searchTerm, callback) {
     db.cypher({ query:query }, function(err, results){
         if (err) throw err;
 
-        var data = _.map(results.slice(0,config.searchResultsLength), function(r){
-            var props = r.recipe.properties
-            var recipe = {};
-            recipe.id = props.id;
-            recipe.name = props.name;
-            recipe.author = { name: props.author_name };
-            recipe.image = { url: props.image_url };
-            recipe.ingredients = _.map(r.ingredients, function(i){
-                return i.properties;
-            });
-            return recipe;
-        });
-
+        var data = _.map(results.slice(0,config.searchResultsLength), transformRecipe);
         callback(err, { data: data });
     });
 };
 
+var get = function(id, callback) {
+    var query = [
+        'MATCH (recipe:Recipe {id: "' + id + '"})',
+        'MATCH (recipe)-[:CONTAINS]->(i)',
+        'WITH recipe, collect(i) as ingredients',
+        'RETURN recipe, ingredients'
+    ].join("\n");
+    db.cypher({ query:query }, function(err, results){
+        if (err) throw err;
+
+        var data = _.map(results, transformRecipe);
+        callback(err, { data: data });
+    });
+}
+
 module.exports.search = search;
+module.exports.get = get;
 

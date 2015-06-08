@@ -25,7 +25,16 @@ app.route('/recipes')
 
             return res.json(result);
         });
-    })
+    });
+
+app.route('/recipes/:id')
+    .get(function(req, res){
+        db.get(req.params.id, function(err, result){
+            if (err) res.status(500).send();
+
+            return res.json(result);
+        });
+    });
 
 app.listen(process.env.PORT || 10020);
 
