@@ -12,7 +12,7 @@ var db = new neo4j.GraphDatabase(props);
 
 var transformRecipe = function(r){
     var props = r.recipe.properties
-    return {
+    var recipe = {
         id: props.id,
         name: props.name,
         source: { name: props.source_name, url: props.source_url },
@@ -23,6 +23,11 @@ var transformRecipe = function(r){
             return i.properties;
         })
     };
+
+    if (!recipe.image.url) delete recipe.image;
+    if (!recipe.source.url) delete recipe.source;
+
+    return recipe;
 };
 
 var search = function(searchTerm, callback) {
