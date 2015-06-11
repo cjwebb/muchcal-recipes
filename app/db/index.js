@@ -2,7 +2,7 @@
 
 var neo4j  = require('neo4j'),
     _      = require('lodash'),
-    config = require('./config.js');
+    config = require('../../config.js');
 
 var props = {
     url: config.neo4jUrl,
@@ -66,8 +66,40 @@ var get = function(id, callback) {
         var data = _.map(results, transformRecipe);
         callback(err, { data: data });
     });
-}
+};
+
+var getSentiments = function(data, callback){
+    var query = [
+        'MATCH (u:User {id:"' + data.userId + '"})',
+        'MATCH (u)-[:LIKES]-(recipe)',
+        'WITH DISTINCT recipe',
+        'MATCH (recipe)-[:CONTAINS]->(i)',
+        'WITH recipe, collect(i) as ingredients',
+        'RETURN recipe, ingredients'
+    ].join("\n");
+
+    db.cypher({ query:query }, function(err, results){
+        if (err) throw err;
+
+        var data = _.map(results, transformRecipe);
+        callback(err, data);
+    })
+};
+
+var createSentiment = function(data, callback){
+    var query = [
+        'MATCH (u:User {id:"' + data.userId + '"}),',
+              '(r:Recipe {id:"' + data.recipeId + '"})',
+        'CREATE (u)-[:LIKES]->(r)'
+    ].join("\n");
+
+    db.cypher({ query:query }, function(err, results){
+        callback(err);
+    });
+};
 
 module.exports.search = search;
 module.exports.get = get;
+module.exports.getSentiments = getSentiments;
+module.exports.createSentiment = createSentiment;
 
