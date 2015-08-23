@@ -9,6 +9,7 @@
   "dependencies": {
     "12factor-config": "^1.0.0",
     "body-parser": "1.x",
+    "cors": "^2.7.1",
     "express": "4.x",
     "express-validator": "2.9.0",
     "lodash": "^3.7.0",
