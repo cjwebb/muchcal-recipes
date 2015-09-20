@@ -30,25 +30,27 @@ var transformRecipe = function(r){
     return recipe;
 };
 
-var search = function(searchTerm, callback) {
+var search = function(searchParams, callback) {
     // ingredients can be made top-level results by making
     //   MATCH (result)-[:CONTAINS]->(i)
     // into
     //   OPTIONAL MATCH (result)-[:CONTAINS]->(i)
     var query = [
-        'START f=node:node_auto_index("name:(*' + searchTerm + '*)")',
+        'START f=node:node_auto_index("name:(*' + searchParams.term + '*)")',
         'OPTIONAL MATCH (r)-[:CONTAINS|TYPE_OF*]->(f)',
         'WITH collect(r) + collect(f) as coll UNWIND coll as result',
         'WITH DISTINCT result',
         'MATCH (result)-[:CONTAINS]->(i)',
         'WITH result as recipe, collect(i) as ingredients',
-        'RETURN recipe, ingredients'
+        'RETURN recipe, ingredients',
+        'SKIP ' + searchParams.from,
+        'LIMIT ' + searchParams.limit
     ].join("\n");
 
     db.cypher({ query:query }, function(err, results){
         if (err) throw err;
 
-        var data = _.map(results.slice(0,config.searchResultsLength), transformRecipe);
+        var data = _.map(results, transformRecipe);
         callback(err, { data: data });
     });
 };

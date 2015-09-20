@@ -18,10 +18,15 @@ module.exports = config({
         type: 'string',
         required: true
     },
-    searchResultsLength: {
+    defaultSearchResultsLength: {
         env: 'MUNCHCAL_SEARCH_RESULTS_LENGTH',
         type: 'integer',
         default: 9
+    },
+    maxSearchResultsLength: {
+        env: 'MUNCHCAL_MAX_SEARCH_RESULTS_LENGTH',
+        type: 'integer',
+        default: 27
     }
 });
 
