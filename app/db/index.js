@@ -18,7 +18,7 @@ var transformRecipe = function(r){
         source: { name: props.source_name, url: props.source_url },
         author: { name: props.author_name },
         description: props.description,
-        image: { url: props.image_url },
+        image: { url: "https://images.munchcal.com/recipes/" + props.id + '.jpg' },
         ingredients: _.map(r.ingredients, function(i){
             return i.properties;
         })
