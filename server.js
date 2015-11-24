@@ -15,9 +15,8 @@ app.use(expValidator());
 app.use(cors());
 
 app.get('/recipes', routes.recipes.search)
+app.get('/recipes/random', routes.recipes.random)
 app.get('/recipes/:id', routes.recipes.get)
-app.get('/sentiments', routes.sentiments.get);
-app.post('/sentiments', routes.sentiments.create);
 
 app.listen(process.env.PORT || 10020);
 

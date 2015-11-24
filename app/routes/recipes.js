@@ -52,5 +52,25 @@ var get = function(req, res){
     });
 }
 
+var random = function(req, res){
+    req.sanitize('limit').trim();
+    req.checkQuery('limit').optional().isInt();
+
+    var errors = req.validationErrors();
+    if (errors) return res.status(400).json(errors);
+
+    var limit = config.defaultRandomResultsLength;
+    if (between(req.query.limit, 0, config.maxRandomResultsLength)) {
+        limit = req.query.limit;
+    }
+
+    db.random({ limit: limit }, function(err, result){
+        if (err) res.status(500).send();
+
+        return res.json(result);
+    })
+};
+
 module.exports.search = search;
 module.exports.get = get;
+module.exports.random = random;

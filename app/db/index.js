@@ -30,6 +30,15 @@ var transformRecipe = function(r){
     return recipe;
 };
 
+var runQuery = function(query, callback) {
+    db.cypher({ query: query }, function(err, results){
+        if (err) throw err;
+
+        var data = _.map(results, transformRecipe);
+        callback(err, { data: data });
+    });
+};
+
 var search = function(searchParams, callback) {
     // ingredients can be made top-level results by making
     //   MATCH (result)-[:CONTAINS]->(i)
@@ -46,13 +55,7 @@ var search = function(searchParams, callback) {
         'SKIP ' + searchParams.from,
         'LIMIT ' + searchParams.limit
     ].join("\n");
-
-    db.cypher({ query:query }, function(err, results){
-        if (err) throw err;
-
-        var data = _.map(results, transformRecipe);
-        callback(err, { data: data });
-    });
+    runQuery(query, callback);
 };
 
 var get = function(id, callback) {
@@ -62,46 +65,23 @@ var get = function(id, callback) {
         'WITH recipe, collect(i) as ingredients',
         'RETURN recipe, ingredients'
     ].join("\n");
-    db.cypher({ query:query }, function(err, results){
-        if (err) throw err;
-
-        var data = _.map(results, transformRecipe);
-        callback(err, { data: data });
-    });
+    runQuery(query, callback);
 };
 
-var getSentiments = function(data, callback){
+var random = function(params, callback) {
     var query = [
-        'MATCH (u:User {id:"' + data.userId + '"})',
-        'MATCH (u)-[:LIKES]-(recipe)',
-        'WITH DISTINCT recipe',
+        'MATCH (recipe:Recipe)',
+        'WITH recipe, rand() as number',
+        'ORDER BY number',
+        'LIMIT ' + params.limit,
         'MATCH (recipe)-[:CONTAINS]->(i)',
         'WITH recipe, collect(i) as ingredients',
         'RETURN recipe, ingredients'
     ].join("\n");
-
-    db.cypher({ query:query }, function(err, results){
-        if (err) throw err;
-
-        var data = _.map(results, transformRecipe);
-        callback(err, data);
-    })
-};
-
-var createSentiment = function(data, callback){
-    var query = [
-        'MATCH (u:User {id:"' + data.userId + '"}),',
-              '(r:Recipe {id:"' + data.recipeId + '"})',
-        'CREATE (u)-[:LIKES]->(r)'
-    ].join("\n");
-
-    db.cypher({ query:query }, function(err, results){
-        callback(err);
-    });
+    runQuery(query, callback);
 };
 
 module.exports.search = search;
 module.exports.get = get;
-module.exports.getSentiments = getSentiments;
-module.exports.createSentiment = createSentiment;
+module.exports.random = random;
 

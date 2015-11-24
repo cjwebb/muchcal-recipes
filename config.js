@@ -27,6 +27,16 @@ module.exports = config({
         env: 'MUNCHCAL_MAX_SEARCH_RESULTS_LENGTH',
         type: 'integer',
         default: 27
+    },
+    defaultRandomResultsLength: {
+        env: 'MUNCHCAL_RANDOM_RESULTS_LENGTH',
+        type: 'integer',
+        default: 3
+    },
+    maxRandomResultsLength: {
+        env: 'MUNCHCAL_MAX_RANDOM_RESULTS_LENGTH',
+        type: 'integer',
+        default: 27
     }
 });
 
